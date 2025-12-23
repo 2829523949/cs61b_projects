@@ -84,7 +84,13 @@ public class Model {
      *  Empty spaces are stored as null.
      * */
     public boolean emptySpaceExists() {
-        // TODO: Task 2. Fill in this function.
+        for(int x=0;x<=3;x=x+1){
+            for(int y=0;y<=3;y=y+1){
+                if (this.tile(x,y)==null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -94,7 +100,14 @@ public class Model {
      * given a Tile object t, we get its value with t.value().
      */
     public boolean maxTileExists() {
-        // TODO: Task 3. Fill in this function.
+        for(int x=0;x<=3;x=x+1){
+            for(int y=0;y<=3;y=y+1){
+                Tile copy=this.tile(x,y);
+                if (copy!=null){
+                    if(copy.value()==MAX_PIECE){
+                        return true;
+                    }
+                }}}
         return false;
     }
 
@@ -105,7 +118,44 @@ public class Model {
      * 2. There are two adjacent tiles with the same value.
      */
     public boolean atLeastOneMoveExists() {
-        // TODO: Fill in this function.
+        if(emptySpaceExists()){
+            return true;
+        }
+        else{
+            for(int x=1;x<=2;x=x+1){
+                for(int y=1;y<=2;y=y+1){
+                    Tile up=this.tile(x,y+1);
+                    Tile down=this.tile(x,y-1);
+                    Tile left=this.tile(x-1,y);
+                    Tile right=this.tile(x+1,y);
+                    int[]same=new int[]{up.value(),down.value(),left.value(),right.value()};
+                    Tile copy=this.tile(x,y);
+                    for(int value:same){
+                        if(copy.value()==value){
+                            return true;
+                        }
+                    }
+                    }}
+        Tile corner1=this.tile(0,0);
+        int[]same1=new int[]{(this.tile(1,0)).value(),(this.tile(0,1)).value()};
+            for(int value:same1){
+                if(corner1.value()==value){
+                    return true;}}
+            Tile corner2=this.tile(3,0);
+            int[] same2 =new int[]{(this.tile(2,0)).value(),(this.tile(3,1)).value()};
+            for(int value: same2){
+                if(corner2.value()==value){
+                    return true;}}
+            Tile corner3=this.tile(0,3);
+            int[]same3=new int[]{(this.tile(0,2)).value(),(this.tile(1,3)).value()};
+            for(int value:same3){
+                if(corner3.value()==value){
+                    return true;}}
+            Tile corner4=this.tile(3,3);
+            int[] same4 =new int[]{(this.tile(3,2)).value(),(this.tile(2,3)).value()};
+            for(int value: same4){
+                if(corner4.value()==value){
+                    return true;}}}
         return false;
     }
 
@@ -127,9 +177,30 @@ public class Model {
         Tile currTile = board.tile(x, y);
         int myValue = currTile.value();
         int targetY = y;
+        while(true){
+            if(targetY==3){
+                break;
+            }
+            else{
+                if(board.tile(x,targetY+1)!=null) {
+                    Tile maybemerged=board.tile(x,targetY+1);
+                    if((!maybemerged.wasMerged())&&(maybemerged.value()==myValue)){
+                        board.move(x,targetY+1,currTile);
+                        score=score+2*myValue;
+                        return;
+                        //注意，.value()是方法调用而不是属性，不能赋值
+                    }
+                    else{break;}
+                }
+                else{
+                    targetY=targetY+1;
+                }
+                }
+            }//java里面也可以用break来停止while循环
+        if(y==targetY){return;}
+        else{
+        board.move(x,targetY,currTile);}}
 
-        // TODO: Tasks 5, 6, and 10. Fill in this function.
-    }
 
     /** Handles the movements of the tilt in column x of the board
      * by moving every tile in the column as far up as possible.
@@ -137,11 +208,18 @@ public class Model {
      * so we are tilting the tiles in this column up.
      * */
     public void tiltColumn(int x) {
-        // TODO: Task 7. Fill in this function.
+       for(int y=3;y>=0;y--){
+           if(board.tile(x,y)!=null){
+               moveTileUpAsFarAsPossible(x,y);
+           }
+       }
     }
 
     public void tilt(Side side) {
-        // TODO: Tasks 8 and 9. Fill in this function.
+        board.setViewingPerspective(side);
+        for(int i=0;i<=3;i++)
+        {tiltColumn(i);}
+        board.setViewingPerspective(Side.NORTH);
     }
 
     /** Tilts every column of the board toward SIDE.
