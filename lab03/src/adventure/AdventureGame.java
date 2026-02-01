@@ -28,7 +28,8 @@ public class AdventureGame {
      * runs the stage and its puzzles.
      */
     void handleStage() {
-        this.currentStage.playStage();
+        this.currentStage.
+                playStage();
         System.out.println(this);
         if (this.currentStage.getResponses().isEmpty()) {
             this.currentStage = null;

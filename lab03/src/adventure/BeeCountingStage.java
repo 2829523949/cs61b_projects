@@ -3,15 +3,14 @@ package adventure;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdRandom;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BeeCountingStage implements AdventureStage {
     private static final int[] SOME_NEAT_NUMBERS = {5, 3, 2, 6, 7};
 
     private final In in;
     private final Map<String, AdventureStage> responses;
-    private List<String> input;
+    private List<String> input=new ArrayList<>();
 
     public BeeCountingStage(In in) {
         this.in = in;
@@ -83,7 +82,7 @@ public class BeeCountingStage implements AdventureStage {
      */
     private int sumInput() {
         int sum = 0;
-        for (int i = 0; i <= this.input.size(); i++) {
+        for (int i = 0; i <this.input.size(); i++) {
             sum += Integer.parseInt(this.input.get(i));
         }
         return sum;
