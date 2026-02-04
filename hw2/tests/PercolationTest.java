@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class PercolationTest {
@@ -81,8 +82,10 @@ public class PercolationTest {
     // TODO: Using the given tests above as a template,
     //       write some more tests and delete the fail() line
     @Test
-    public void yourFirstTestHere() {
-        fail("Did you write your own tests?");
+    public void simpleTest() {
+        Percolation p = new Percolation(5);
+        p.open(0, 0);
+        assertTrue(p.isOpen(0, 0));
     }
 
 }
