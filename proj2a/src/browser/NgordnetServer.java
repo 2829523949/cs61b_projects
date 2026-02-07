@@ -1,12 +1,14 @@
 package browser;
 
+import main.DummyHistoryHandler;
+
 import static spark.Spark.*;
 
 /**
  * Created by hug.
  */
 public class NgordnetServer {
-    public void register(String URL, NgordnetQueryHandler nqh) {
+    public void register(String URL, DummyHistoryHandler nqh) {
         get(URL, nqh);
     }
 
