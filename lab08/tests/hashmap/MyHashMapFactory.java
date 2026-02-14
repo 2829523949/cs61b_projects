@@ -16,8 +16,8 @@ public class MyHashMapFactory {
      * @param bucketType the type of bucket to use
      */
     public static <K, V> MyHashMap<K, V> createBucketedMap(Class<? extends Collection> bucketType) {
-        return new MyHashMap<>() {
-            @Override
+        return new MyHashMap() {
+
             protected Collection<Node> createBucket() {
                 try {
                     return bucketType.getConstructor().newInstance();
