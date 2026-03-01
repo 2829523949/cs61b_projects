@@ -9,6 +9,9 @@ import utils.FileUtils;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
+import static utils.FileUtils.readFile;
+import static utils.FileUtils.writeFile;
+
 /**
  * Am implementation of Conway's Game of Life using StdDraw.
  * Credits to Erik Nelson, Jasmine Lin and Elana Ho for
@@ -236,16 +239,42 @@ public class GameOfLife {
         TETile[][] nextGen = new TETile[width][height];
         // The board is filled with Tileset.NOTHING
         fillWithNothing(nextGen);
-
-        // TODO: Implement this method so that the described transitions occur.
-        // TODO: The current state is represented by TETiles[][] tiles and the next
-        // TODO: state/evolution should be returned in TETile[][] nextGen.
-
-
-
-
-        // TODO: Returns the next evolution in TETile[][] nextGen.
-        return null;
+        for(int x=0;x<width;x++){
+            for(int y=0;y<height;y++){
+                TETile current=tiles[x][y];
+                int[] hang=new int[]{-1,0,1};
+                int[] lie=new int[]{-1,0,1};
+                int count=0;
+                for(int i=0;i<3;i++){
+                    for(int j=0;j<3;j++){
+                        int currenthang=x+hang[i];
+                        int currentlie=y+lie[j];
+                        if((0<=currenthang)&&(currenthang<=width-1)&&(0<=currentlie)&&(currentlie<=height-1)){
+                            if(tiles[currenthang][currentlie]==Tileset.CELL){
+                                count=count+1;
+                            }
+                        }/**判断周围/中心的这个细胞是死是活**/
+                    }
+                }
+                if(current==Tileset.CELL){
+                    if(count<3){
+                        nextGen[x][y]=Tileset.NOTHING;
+                    }
+                    else if((count==3)||(count==4)){
+                        nextGen[x][y]=Tileset.CELL;
+                    }
+                    else{
+                        nextGen[x][y]=Tileset.NOTHING;
+                    }
+                }/**有细胞就考虑存活/死亡，注意，这里的count考虑了本身，因此条件的每一个数值要加1**/
+                else{
+                    if(count==3){
+                        nextGen[x][y]=Tileset.CELL;
+                    }
+                }/**没有细胞就考虑复活**/
+            }
+        }
+        return nextGen;
     }
 
     /**
@@ -266,20 +295,20 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public void saveBoard() {
-        // TODO: Save the dimensions of the board into the first line of the file.
-        // TODO: The width and height should be separated by a space, and end with "\n".
-
-
-
-        // TODO: Save the current state of the board into save.txt. You should
-        // TODO: use the provided FileUtils functions to help you. Make sure
-        // TODO: the orientation is correct! Each line in the board should
-        // TODO: end with a new line character.
-
-
-
-
-
+        StringBuilder helper=new StringBuilder();
+        helper.append(width).append(" ").append(height).append("\n");
+        for(int i=height-1;i>=0;i--){
+            for(int j=0;j<width;j++){
+                if(currentState[j][i]==Tileset.CELL){
+                    helper.append(1);
+                }
+                else{
+                    helper.append(0);
+                }
+            }
+            helper.append("\n");
+        }
+        writeFile(SAVE_FILE,helper.toString());
     }
 
     /**
@@ -287,9 +316,24 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public TETile[][] loadBoard(String filename) {
-        // TODO: Read in the file.
-
-        // TODO: Split the file based on the new line character.
+        String content=readFile(filename);
+        String[]information=content.split("\n");/**每一行占一个位置，标号0是width和height，后面的对应要加1**/
+        String[]WidthAndHeight=information[0].split(" ");
+        int WidthToBeLoaded=Integer.parseInt(WidthAndHeight[0]);
+        int HeightToBeLoaded=Integer.parseInt(WidthAndHeight[1]);
+        TETile[][]container=new TETile[HeightToBeLoaded][WidthToBeLoaded];
+        for(int i=0;i<HeightToBeLoaded;i++){
+            for(int j=0;j<WidthToBeLoaded;j++){
+                int num=Character.getNumericValue(information[i+1].charAt(j));
+                if(num==0){
+                    container[i][j]=Tileset.NOTHING;
+                }
+                else{
+                    container[i][j]=Tileset.CELL;
+                }
+            }
+        }
+        return container;
 
         // TODO: Grab and set the dimensions from the first line.
 
@@ -305,7 +349,7 @@ public class GameOfLife {
 
 
         // TODO: Return the board you loaded. Replace/delete this line.
-        return null;
+
     }
 
     /**
