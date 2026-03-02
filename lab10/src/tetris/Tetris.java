@@ -5,6 +5,7 @@ import tileengine.TETile;
 import tileengine.TERenderer;
 import tileengine.Tileset;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -14,7 +15,7 @@ import java.util.*;
  */
 
 public class Tetris {
-
+    /**注意，本项目的第一个坐标是横坐标，第二个是纵坐标。**/
     private static int WIDTH = 10;
     private static int HEIGHT = 20;
 
@@ -65,6 +66,7 @@ public class Tetris {
      * accordingly. Flags the game to end if the top of the board
      * is filled and the new piece cannot be spawned.
      */
+
     private void spawnPiece() {
         // The game ends if this tile is filled
         if (board[4][19] != Tileset.NOTHING) {
@@ -89,11 +91,24 @@ public class Tetris {
             Tetromino.draw(t, board, t.pos.x, t.pos.y);
             return;
         }
-
-        // TODO: Implement interactivity, so the user is able to input the keystrokes to move
-        //  the tile and rotate the tile. You'll want to use some provided helper methods here.
-
-
+        if(StdDraw.hasNextKeyTyped()){
+            char input=StdDraw.nextKeyTyped();
+            if(input=='a'){
+                movement.tryMove(-1,0);
+            }
+            else if(input=='d'){
+                movement.tryMove(+1,0);
+            }
+            else if(input=='s'){
+                movement.tryMove(0,-1);
+            }
+            else if(input=='q'){
+                movement.rotateLeft();
+            }
+            else if(input=='w'){
+                movement.rotateRight();
+            }
+        };
         Tetromino.draw(t, board, t.pos.x, t.pos.y);
     }
 
@@ -103,8 +118,18 @@ public class Tetris {
      * @param linesCleared
      */
     private void incrementScore(int linesCleared) {
-        // TODO: Increment the score based on the number of lines cleared.
-
+        if(linesCleared==1){
+         score=score+100;
+        }
+        else if(linesCleared==2){
+            score=score+300;
+        }
+        else if(linesCleared==3){
+            score=score+500;
+        }
+        else if(linesCleared==4){
+            score=score+800;
+        }
     }
 
     /**
@@ -115,10 +140,26 @@ public class Tetris {
     public void clearLines(TETile[][] tiles) {
         // Keeps track of the current number lines cleared
         int linesCleared = 0;
-
-        // TODO: Check how many lines have been completed and clear it the rows if completed.
-
-        // TODO: Increment the score based on the number of lines cleared.
+        for(int i=0;i<HEIGHT;i++){
+            boolean full=true;
+            for(int j=0;j<WIDTH;j++){
+                if (tiles[j][i] == null) {
+                    full = false;
+                    break;
+                }
+            }
+            if(full==true){
+                linesCleared++;
+                for(int curr=i+1;curr<HEIGHT;curr++){
+                    for(int column=0;column<WIDTH;column++){
+                        tiles[column][curr-1]=tiles[column][curr];
+                        tiles[column][curr]=Tileset.NOTHING;
+                    }
+                }
+                i--;
+            }
+        }
+        incrementScore(linesCleared);
 
         fillAux();
     }
@@ -128,20 +169,40 @@ public class Tetris {
      * over.
      */
     public void runGame() {
+        renderBoard();
         resetActionTimer();
-
-        // TODO: Set up your game loop. The game should keep running until the game is over.
+        spawnPiece();
+        while(!isGameOver()){
+            spawnPiece();
+            while(!CheckNull()){
+                updateBoard();
+                renderBoard();
+                clearLines(board);
+                renderBoard();
+            }
+        }
         // Use helper methods inside your game loop, according to the spec description.
+    }
 
-
+    private boolean CheckNull() {
+        boolean AllNull = true;
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                if (board[j][i] != null) {
+                    AllNull = false;
+                }
+            }
+        }
+            return AllNull;
     }
 
     /**
      * Renders the score using the StdDraw library.
      */
     private void renderScore() {
-        // TODO: Use the StdDraw library to draw out the score.
-
+        StdDraw.setPenColor(StdDraw.WHITE);
+        String ShowScore="score:"+score;
+        StdDraw.text(7,19,ShowScore);
     }
 
     /**
