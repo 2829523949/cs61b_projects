@@ -11,16 +11,14 @@ public class AutograderBuddy {
      * had been typed on the keyboard.
      *
      * Recall that strings ending in ":q" should cause the game to quit and
-     * save. To "quit" in this method, save the game to a file, then just return
+     * save.txt. To "quit" in this method, save.txt the game to a file, then just return
      * the TETile[][]. Do not call System.exit(0) in this method.
      *
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
     public static TETile[][] getWorldFromInput(String input) {
-
-        throw new RuntimeException("Please fill out AutograderBuddy!");
-
+        return null;
     }
 
 
